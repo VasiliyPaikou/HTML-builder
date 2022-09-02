@@ -48,48 +48,20 @@ fs.readdir(assetsPath, (err, files) => {
   })
 })
 
-
-
-
-// fs.readFile(path.join(__dirname,'components','articles.html'), 'utf-8',(err,file)=>{
-// 	if (err) throw err
-// let articlesContent = file
-// let a = fs.createWriteStream(path.join(__dirname,'template.html'),{
-// 	flags:'r+'
-// })
-// a.write(articlesContent )
-// } )
 fs.readFile(path.join(__dirname, 'template.html'), 'utf-8', (err, file) => {
   if (err) throw err
-  let tags = file.match(/{{\w*}}/g)
-  let d = file.split(/{{\w*}}/)
-  // let d = file.replace(/{{\w*}}/g,'!!!!!').split('!!!!!')
-
-  console.log(d[0]);
-  console.log('--------------');
-  console.log(d[1]);
-  console.log('--------------');
-  console.log(d[2]);
-  console.log('--------------');
-  console.log(d[3]);
-
-
-  let components = tags.forEach(tag => {
-    let tagName = tag.slice(2, -2)
+  let tags = file.match(/{{\w*}}/gi)
+for (let i = 0; i < 3; i++) {
+    let tagName = tags[i].slice(2, -2)
     let componentPath = path.join(__dirname, 'components', `${tagName}.html`)
     fs.readFile(componentPath, 'utf-8', (err, data) => {
+file =  file.replace(tags[i],data)
       if (err) throw err
-      // console.log(data);
-      // fs.writeFile(path.join(__dirname, 'template.html'), file.replace(tag, data), err => {
-      //   if (err) throw err
-      // })
+        fs.writeFile(path.join(newPath, 'index.html'), file, err => {
+          if (err) throw err
+        })
     })
-  })
+  }
 }
 )
-// const responsive = fs.createReadStream(path.join(__dirname,'template.html'));
-// responsive.on('data', (content)=>{
-// 	const data = Buffer.from(content)
-// 	console.log(data.toString());
-// })
 
