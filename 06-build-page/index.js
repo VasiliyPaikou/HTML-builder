@@ -4,6 +4,8 @@ const { log } = require('console');
 const stylesPath = path.join(__dirname, 'styles');
 const newPath = path.join(__dirname, 'project-dist');
 const pathBundle = path.join(__dirname, 'project-dist', 'style.css');
+const compPath = path.join(__dirname, 'components');
+
 fs.mkdir(newPath, { recursive: true }, (err, files) => {
   if (err) console.log(err);
 })
@@ -51,17 +53,21 @@ fs.readdir(assetsPath, (err, files) => {
 fs.readFile(path.join(__dirname, 'template.html'), 'utf-8', (err, file) => {
   if (err) throw err
   let tags = file.match(/{{\w*}}/gi)
-for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 3; i++) {
     let tagName = tags[i].slice(2, -2)
     let componentPath = path.join(__dirname, 'components', `${tagName}.html`)
-    fs.readFile(componentPath, 'utf-8', (err, data) => {
-file =  file.replace(tags[i],data)
-      if (err) throw err
+    fs.readdir(compPath, (err, files) => {
+      if (err) throw err;
+      if (files.indexOf(`${tagName}.html`) !== -1) {
+      fs.readFile(componentPath, 'utf-8', (err, data) => {
+        file = file.replace(tags[i], data)
+        if (err) throw err
         fs.writeFile(path.join(newPath, 'index.html'), file, err => {
           if (err) throw err
         })
+      })
+    }
     })
   }
-}
-)
+})
 
